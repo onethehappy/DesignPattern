@@ -13,21 +13,28 @@ import com.cmhy.observer.inter.Subject;
 public class SubjectImpl implements Subject{
 	public List<Observer> list = new ArrayList<Observer>();
 	public int cnt;
-	public void addObserver(Observer observer) {
+	public synchronized void addObserver(Observer observer) {
 		// TODO Auto-generated method stub
-		list.add(observer);
+		if(observer == null){
+			throw new NullPointerException();
+		}
+		if (!list.contains(observer)) {
+			list.add(observer);
+		}
 	}
 
-	public void deleteObserver(Observer observer) {
+	public synchronized void deleteObserver(Observer observer) {
 		// TODO Auto-generated method stub
 		list.remove(observer);
 	}
 
 	public void notifyObserve() {
 		// TODO Auto-generated method stub
-		for (Observer observer : list) {
-			observer.update((new Integer(cnt++)).toString());
+		synchronized(this){
+			for (Observer observer : list) {
+				observer.update((new Integer(cnt++)).toString());
+			}	
 		}
 	}
-	
+
 }
